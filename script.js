@@ -22,34 +22,35 @@ const checkEmail = (email) => {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
 }
+const getFieldName = (input) => {
+    const label = input.previousElementSibling
+    return label.innerText.toUpperCase()
+}
+//check fields 
+const checkRequired = (...rest) => {
+    return rest.map((el) => {
+        if (el.value.trim() === '') {
+            showError(el, `${getFieldName(el)} is required`)
+        }
+        else {
+            if (el.id.trim() === 'email') {
+                if (checkEmail(el.value)) {
+                    showSuccess(el)
+
+                    return el;
+                }
+                else {
+                    showError(el, 'Email is not correct')
+
+                    return el;
+                }
+            }
+            showSuccess(el)
+        }
+    })
+}
 form.addEventListener('submit', (e) => {
     e.preventDefault()
 
-    if (username.value === '') {
-        showError(username, 'Username is required')
-    }
-    else {
-        showSuccess(username)
-    }
-
-    if (!checkEmail(email.value)) {
-        showError(email, 'Email is not valid')
-    }
-    else {
-        showSuccess(email)
-    }
-
-    if (password.value === '') {
-        showError(password, 'Password is required')
-    }
-    else {
-        showSuccess(password)
-    }
-
-    if (password2.value === '') {
-        showError(password2, 'Password does not match')
-    }
-    else {
-        showSuccess(password2)
-    }
+    checkRequired(username, email, password, password2)
 })
